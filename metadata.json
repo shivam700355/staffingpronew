@@ -1,0 +1,8 @@
+{
+  "name": "StaffingPro",
+  "description": "A high-performance interactive job portal and recruitment platform for matching candidates and leading employers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
