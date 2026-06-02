@@ -48,17 +48,16 @@ export default function HeroSection({ onSearch, setCurrentPage }: HeroSectionPro
           
           {/* Left Column: marketing copy and interactive search bar */}
           <div className="lg:col-span-7 space-y-6 lg:pr-6">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-yellow-100/55 rounded-full border border-yellow-200">
-              <Sparkles className="h-4 w-4 text-amber-500 fill-amber-500/10" />
-              <span className="text-xs font-bold text-amber-800 tracking-wide">
-                100% Certified Lateral Recruitment Channels
-              </span>
-            </div>
+         
             
-            <h1 className="text-4xl sm:text-5xl lg:text-5xl.5 font-sans font-extrabold text-sp-navy leading-[1.12] tracking-tight">
+            <h1 className="text-4xl sm:text-6xl lg:text-6xl.5 font-sans font-extrabold text-sp-navy leading-[1.12] tracking-tight">
+              Find a job that suits <br />
+              your <span className="text-sp-green ">interest & skills.</span>
+            </h1>
+            {/*  <h1 className="text-4xl sm:text-5xl lg:text-5xl.5 font-sans font-extrabold text-sp-navy leading-[1.12] tracking-tight">
               Find a job that suits <br />
               your <span className="text-sp-green underline decoration-wavy decoration-2 underline-offset-8">interest & skills.</span>
-            </h1>
+            </h1> */}
 
             <p className="text-sp-muted text-sm sm:text-base leading-relaxed max-w-xl">
               Discover verified opportunities inside premium tech-clusters, healthcare networks, corporate giants, and fast-growing Indian unicorns like Zomato and Swiggy.

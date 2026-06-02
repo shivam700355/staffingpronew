@@ -55,7 +55,7 @@ export default function CategoryGrid({ onSelectCategory }: CategoryGridProps) {
           <h2 className="text-2xl sm:text-3xl font-extrabold text-sp-navy tracking-tight mb-3">
             Browse by Category
           </h2>
-          <p className="text-sm text-gray-500 font-semibold">
+          <p className="text-base text-gray-500 font-medium">
             Choose a sector of interest to view specific job openings and experience criteria instantly.
           </p>
         </div>

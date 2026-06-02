@@ -7,8 +7,8 @@ export default function StatsBar() {
       id: 'stat_1',
       num: '1,75,324',
       label: 'Live Jobs',
-      bgColor: 'bg-sp-green-light',
-      iconColor: 'text-sp-green',
+      bgColor: 'bg-sp-navy/10',
+      iconColor: 'text-sp-navy',
       icon: Briefcase
     },
     {
@@ -23,8 +23,8 @@ export default function StatsBar() {
       id: 'stat_3',
       num: '38,47,154',
       label: 'Candidates',
-      bgColor: 'bg-sp-green-light',
-      iconColor: 'text-sp-green',
+      bgColor: 'bg-sp-navy/10',
+      iconColor: 'text-sp-navy',
       icon: Users2
     },
     {
@@ -50,12 +50,12 @@ export default function StatsBar() {
               >
                 {/* Circle icon wrapper */}
                 <div
-                  className={`h-12 w-12 rounded-lg ${stat.bgColor} ${stat.iconColor} flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110`}
+                  className={`h-12 w-12 rounded-lg ${stat.bgColor} ${stat.iconColor} flex items-center justify-center shrink-0 transition-transform duration-300 `}
                 >
                   <IconComponent className="h-6 w-6 font-semibold" />
                 </div>
                 <div>
-                  <h3 className="text-xl sm:text-2xl font-bold text-sp-navy leading-none mb-1 group-hover:text-sp-green transition-colors">
+                  <h3 className="text-xl sm:text-2xl font-bold text-sp-navy leading-none mb-1 ">
                     {stat.num}
                   </h3>
                   <p className="text-xs text-sp-muted font-semibold uppercase tracking-wider">
