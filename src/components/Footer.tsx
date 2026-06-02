@@ -1,6 +1,6 @@
 import React from 'react';
 import { Mail, MapPin, Phone, Facebook, Twitter, Linkedin, Youtube, ArrowUpRight } from 'lucide-react';
-import Logo from './Logo';
+import logoImage from "../../assets/StaffingLogo.png"
 
 interface FooterProps {
   setCurrentPage: (page: string) => void;
@@ -18,9 +18,18 @@ export default function Footer({ setCurrentPage }: FooterProps) {
           
           {/* Column 1: About agency and summary info */}
           <div className="space-y-4">
-            <Logo size="md" className="brightness-125" />
+           <div
+  onClick={() => setCurrentPage('home')}
+  className="cursor-pointer flex items-center"
+>
+  <img
+    src={logoImage}
+    alt="Logo"
+    className="h-12 w-auto object-contain"
+  />
+</div>
             <p className="text-gray-300 text-sm leading-relaxed mt-4">
-              StaffingPro is a leading recruitment portal matching elite, specialized engineering, medical, and administrative professionals with progressive international enterprises.
+              Connecting talented professionals with leading employers through a simple and efficient hiring platform.
             </p>
             <div className="flex items-center gap-3 pt-2">
               <a
@@ -108,12 +117,12 @@ export default function Footer({ setCurrentPage }: FooterProps) {
             <div className="space-y-3 text-sm text-gray-300">
               <div className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-sp-green shrink-0 mt-0.5" />
-                <span>Level 14, Prestige Tech Park, Outer Ring Road, Marathahalli, Bengaluru, KA 560103</span>
+                <span>Office no- 520, 5th Floor, Parsvanath Plaza, Opposite Summit Building, Vibhuti Khand, Gomti Nagar, Lucknow</span>
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="h-4.5 w-4.5 text-sp-green shrink-0" />
-                <a href="tel:+12025550178" className="hover:text-sp-green transition-colors">
-                  +1-202-555-0178
+                <a href="tel:+918810829604" className="hover:text-sp-green transition-colors">
+                 +91 88108 29604
                 </a>
               </div>
               <div className="flex items-center gap-3">

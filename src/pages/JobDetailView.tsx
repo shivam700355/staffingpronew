@@ -47,6 +47,9 @@ export default function JobDetailView({ job, onBack, onApplySuccess, currentUser
   // Profile data fetch for checking completeness gates dynamically
   const profile = currentUser && currentUser.role === 'seeker' ? getSeekerProfile(currentUser.email) : null;
   const completeness = profile ? calculateSeekerCompleteness(profile) : 0;
+  const hasResume = Boolean(profile?.resumeName && profile.resumeName !== 'No Document Uploaded');
+  const hasBio = Boolean(profile?.bioText && profile.bioText.length >= 15);
+  const hasSkills = Boolean(profile?.skillsList && profile.skillsList.length >= 3);
 
   // Sync profile details into form elements automatically
   useEffect(() => {
@@ -423,20 +426,20 @@ export default function JobDetailView({ job, onBack, onApplySuccess, currentUser
                   <div className="font-extrabold text-sp-navy pb-0.5 border-b border-gray-150 uppercase tracking-widest">Completeness Checklists:</div>
                   <div className="flex justify-between">
                     <span>• Resume Uploaded (30%):</span>
-                    <span className={profile.resumeName && profile.resumeName !== 'No Document Uploaded' ? "text-sp-green font-bold" : "text-gray-400 font-bold"}>
-                      {profile.resumeName && profile.resumeName !== 'No Document Uploaded' ? "Completed" : "Missing"}
+                    <span className={hasResume ? "text-sp-green font-bold" : "text-gray-400 font-bold"}>
+                      {hasResume ? "Completed" : "Missing"}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span>• Professional Bio (25%):</span>
-                    <span className={profile.bioText && profile.bioText.length >= 15 ? "text-sp-green font-bold" : "text-gray-400 font-bold"}>
-                      {profile.bioText && profile.bioText.length >= 15 ? "Completed" : "Missing"}
+                    <span className={hasBio ? "text-sp-green font-bold" : "text-gray-400 font-bold"}>
+                      {hasBio ? "Completed" : "Missing"}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span>• At least 3 skills tags (25%):</span>
-                    <span className={profile.skillsList && profile.skillsList.length >= 3 ? "text-sp-green font-bold" : "text-gray-400 font-bold"}>
-                      {profile.skillsList && profile.skillsList.length >= 3 ? "Completed" : "Missing"}
+                    <span className={hasSkills ? "text-sp-green font-bold" : "text-gray-400 font-bold"}>
+                      {hasSkills ? "Completed" : "Missing"}
                     </span>
                   </div>
                 </div>

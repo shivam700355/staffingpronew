@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, Menu, X, User, LogOut } from 'lucide-react';
-import Logo from './Logo';
+import logoImage from '../../assets/StaffingLogo.png';
 
 interface HeaderProps {
   currentPage: string;
@@ -70,10 +70,16 @@ export default function Header({ currentPage, setCurrentPage, currentUser, onLog
 
   const navLinks = [
     { id: 'jobs', label: 'Find Job' },
-    { id: 'employers', label: 'Employers' },
-    { id: 'candidates', label: 'Candidates' },
-    { id: 'pricing', label: 'Pricing Plans' }
+    { id: '', label: 'Employers' },
+    { id: '', label: 'Candidates' },
+    { id: '', label: 'Pricing Plans' }
   ];
+  //   const navLinks = [
+  //   { id: 'jobs', label: 'Find Job' },
+  //   { id: 'employers', label: 'Employers' },
+  //   { id: 'candidates', label: 'Candidates' },
+  //   { id: 'pricing', label: 'Pricing Plans' }
+  // ];
 
   return (
     <header
@@ -88,9 +94,16 @@ export default function Header({ currentPage, setCurrentPage, currentUser, onLog
         <div className="flex items-center justify-between">
           
           {/* Brand Logo and Text */}
-          <div onClick={() => setCurrentPage('home')} className="cursor-pointer">
-            <Logo size="md" />
-          </div>
+        <div
+  onClick={() => setCurrentPage('home')}
+  className="cursor-pointer flex items-center"
+>
+  <img
+    src={logoImage}
+    alt="Logo"
+    className="h-12 w-auto object-contain"
+  />
+</div>
 
           {/* Desktop Navigation Links */}
           <nav className="hidden lg:flex items-center gap-7" id="desktop-navbar-items">
@@ -172,7 +185,7 @@ export default function Header({ currentPage, setCurrentPage, currentUser, onLog
               </div>
             ) : (
               <button
-                onClick={() => setCurrentPage('signin')}
+                // onClick={() => setCurrentPage('signin')}
                 className="px-4.5 py-2 text-sm font-semibold text-sp-navy hover:text-sp-green transition-colors duration-200"
                 id="header-sign-in-button"
               >
@@ -181,7 +194,7 @@ export default function Header({ currentPage, setCurrentPage, currentUser, onLog
             )}
 
             <button
-              onClick={() => setCurrentPage('postjob')}
+              // onClick={() => setCurrentPage('postjob')}
               className="px-5 py-2.5 bg-sp-green hover:bg-opacity-90 text-white rounded-lg text-sm font-bold shadow-sm shadow-sp-green/20 transition-all duration-200 hover:-translate-y-0.5"
               id="header-post-job-button"
             >
@@ -192,18 +205,18 @@ export default function Header({ currentPage, setCurrentPage, currentUser, onLog
           {/* Mobile Menu Action Button */}
           <div className="flex lg:hidden items-center gap-4">
             <button
-              onClick={() => setCurrentPage('postjob')}
+              // onClick={() => setCurrentPage('postjob')}
               className="px-3.5 py-1.5 bg-sp-green text-white rounded-md text-xs font-bold transition-all"
             >
               Post Job
             </button>
-            <button
+            {/* <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="p-1.5 rounded-lg text-sp-navy hover:bg-gray-100 transition-colors"
               aria-label="Toggle navigation menu"
             >
               {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </button>
+            </button> */}
           </div>
 
         </div>
@@ -295,10 +308,10 @@ export default function Header({ currentPage, setCurrentPage, currentUser, onLog
                 </div>
               ) : (
                 <button
-                  onClick={() => {
-                    setCurrentPage('signin');
-                    setIsMobileMenuOpen(false);
-                  }}
+                  // onClick={() => {
+                  //   setCurrentPage('signin');
+                  //   setIsMobileMenuOpen(false);
+                  // }}
                   className="w-full py-2.5 text-center text-sm font-semibold text-sp-navy border border-sp-navy/20 rounded-md hover:bg-gray-50 active:bg-gray-100 transition-all"
                 >
                   Sign In

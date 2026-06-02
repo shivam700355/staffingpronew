@@ -32,7 +32,7 @@ export default function HomeView({ onSearch, setCurrentPage, activeJobsList, onS
 
       <HowItWorks />
 
-      <section className="py-16 bg-white border-t border-b border-gray-150" id="home-featured-companies-block">
+      <section className="py-16 bg-white" id="home-featured-companies-block">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-xl mx-auto mb-12">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-sp-navy mb-2.5">Featured Sourcing Corporates</h2>
@@ -51,17 +51,17 @@ export default function HomeView({ onSearch, setCurrentPage, activeJobsList, onS
                     navigate(`/jobs?q=${encodeURIComponent(comp.name)}`);
                     window.scrollTo(0, 0);
                   }}
-                  className="bg-slate-50 border border-gray-200 rounded-xl p-5 text-center cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-md hover:border-sp-green group"
+                  className="bg-slate-50 border border-gray-200 rounded-xl p-5 text-center cursor-pointer transition-all duration-300 "
                 >
                   <div className={`h-11 w-11 mx-auto rounded-lg bg-gradient-to-br ${comp.logoColor} text-white flex items-center justify-center font-extrabold text-sm shadow mb-4.5 group-hover:scale-105 transition-transform`}>
                     {comp.name.substring(0, 2).toUpperCase()}
                   </div>
-                  <h3 className="text-xs sm:text-sm font-extrabold text-sp-navy leading-none mb-1 group-hover:text-sp-green transition-colors line-clamp-1">
+                  <h3 className="text-xs sm:text-sm font-extrabold text-sp-navy leading-none mb-1  transition-colors line-clamp-1">
                     {comp.name}
                   </h3>
                   <span className="text-[10px] text-gray-400 font-bold block mb-3.5">{comp.industry}</span>
                   <div className="flex items-center justify-center gap-1.5 text-xs font-black text-sp-navy border-t border-gray-100 pt-3">
-                    <span className="text-sp-green">{jobCount}</span>
+                    <span className="text-gray-400">{jobCount}</span>
                     <span className="text-gray-400 text-[11px] font-bold">Positions</span>
                   </div>
                 </div>
