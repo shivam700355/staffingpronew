@@ -74,7 +74,7 @@ export default function JobCard({
               <span className="text-[11px] font-bold text-gray-500 truncate hover:text-sp-green transition-colors block max-w-[124px]">
                 {company ? company.name : 'Verified Employer'}
               </span>
-              <CheckCircle className="h-3 w-3 text-blue-500 fill-blue-500/10 shrink-0" title="Verified partner" />
+              <CheckCircle className="h-3 w-3 text-blue-500 fill-blue-500/10 shrink-0" role="img" aria-label="Verified partner" />
             </div>
             
             <span className="text-[10px] text-sp-muted font-semibold block truncate max-w-[124px]">{company?.industry || 'Recruitment Partner'}</span>
