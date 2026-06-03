@@ -101,7 +101,7 @@ export default function Header({ currentPage, setCurrentPage, currentUser, onLog
   <img
     src={logoImage}
     alt="Logo"
-    className="h-12 w-auto object-contain"
+    className="h-15 w-auto object-contain"
   />
 </div>
 

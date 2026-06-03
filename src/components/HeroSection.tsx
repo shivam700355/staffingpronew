@@ -1,6 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Search, MapPin, Sparkles } from 'lucide-react';
-import { CITIES, JOBS } from '../data';
+import { JOBS } from '../data';
+import { getCities, getJobTitles } from '../api';
+
+interface CityOption {
+  id: number;
+  name: string;
+  state: string;
+  is_metro: boolean;
+  status: string;
+}
 
 interface HeroSectionProps {
   onSearch: (keyword: string, city: string) => void;
@@ -11,9 +20,19 @@ export default function HeroSection({ onSearch, setCurrentPage }: HeroSectionPro
   const [keyword, setKeyword] = useState('');
   const [city, setCity] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [cities, setCities] = useState<CityOption[]>([]);
+  const [isLoadingCities, setIsLoadingCities] = useState(false);
+  const [cityLoadError, setCityLoadError] = useState<string | null>(null);
+  const [jobTitles, setJobTitles] = useState<string[]>([]);
+  const [isLoadingJobTitles, setIsLoadingJobTitles] = useState(false);
+  const [jobTitlesError, setJobTitlesError] = useState<string | null>(null);
 
-  // Suggestions derived from actual titles
-  const titleSuggestions = Array.from(new Set(JOBS.map(j => j.title)))
+  // Suggestions derived from live API titles or fallback titles
+  const availableJobTitles = jobTitles.length > 0
+    ? jobTitles
+    : Array.from(new Set(JOBS.map(j => j.title)));
+
+  const titleSuggestions = availableJobTitles
     .filter(title => title.toLowerCase().includes(keyword.toLowerCase()))
     .slice(0, 5);
 
@@ -27,6 +46,48 @@ export default function HeroSection({ onSearch, setCurrentPage }: HeroSectionPro
     setShowSuggestions(false);
     onSearch(selectedKeyword, city);
   };
+
+  useEffect(() => {
+    async function loadCities() {
+      setIsLoadingCities(true);
+      setCityLoadError(null);
+      try {
+        const response = await getCities();
+        if (response && response.data && Array.isArray(response.data)) {
+          setCities(response.data);
+        } else {
+          setCityLoadError('Unable to load cities.');
+        }
+      } catch (error) {
+        setCityLoadError('Unable to load cities.');
+        console.error('HeroSection getCities error:', error);
+      } finally {
+        setIsLoadingCities(false);
+      }
+    }
+
+    loadCities();
+
+    async function loadJobTitles() {
+      setIsLoadingJobTitles(true);
+      setJobTitlesError(null);
+      try {
+        const response = await getJobTitles();
+        if (response && response.data && Array.isArray(response.data)) {
+          setJobTitles(response.data);
+        } else {
+          setJobTitlesError('Unable to load job titles.');
+        }
+      } catch (error) {
+        setJobTitlesError('Unable to load job titles.');
+        console.error('HeroSection getJobTitles error:', error);
+      } finally {
+        setIsLoadingJobTitles(false);
+      }
+    }
+
+    loadJobTitles();
+  }, []);
 
   const trendSuggestions = [
     { label: 'Developer', value: 'Developer' },
@@ -121,9 +182,11 @@ export default function HeroSection({ onSearch, setCurrentPage }: HeroSectionPro
                     id="hero-city-select"
                   >
                     <option value="">Any Location (India)</option>
-                    {CITIES.map((c, idx) => (
-                      <option key={idx} value={c}>
-                        {c}
+                    {isLoadingCities && <option disabled>Loading cities...</option>}
+                    {cityLoadError && <option disabled>Error loading cities</option>}
+                    {cities.map((c) => (
+                      <option key={c.id} value={c.name}>
+                        {c.name}
                       </option>
                     ))}
                   </select>
