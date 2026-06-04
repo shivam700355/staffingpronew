@@ -12,18 +12,60 @@ import {
   PenTool
 } from 'lucide-react';
 import { CATEGORIES } from '../data';
+import { jobCategory } from '../api';
 
 interface CategoryGridProps {
   onSelectCategory: (categoryName: string) => void;
 }
 
 export default function CategoryGrid({ onSelectCategory }: CategoryGridProps) {
+
+  const [categories, setCategories] = React.useState(CATEGORIES);
+  React.useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await jobCategory();
+        
+        const dataArray = Array.isArray(response?.data) ? response.data : [];
+
+        const categoriesWithCounts = CATEGORIES.map((cat) => {
+          const catName = cat.name.toLowerCase();
+
+          const matchedItem = dataArray.find((item: any) => {
+            if (!item) return false;
+            const itemName = String(item.name || '').toLowerCase();
+            const itemSlug = String(item.slug || '').toLowerCase();
+
+            if (itemName && itemName === catName) return true;
+            if (itemSlug && itemSlug === catName.replace(/\s+/g, '-')) return true;
+            if (itemName && catName.includes(itemName)) return true;
+            if (itemName && itemName.includes(catName)) return true;
+            if (itemSlug && catName.includes(itemSlug.replace(/-/g, ' '))) return true;
+            if (itemName && itemName.includes(catName.replace(/ui\/ux\s*/g, ''))) return true;
+            return false;
+          });
+
+          const count = Number(matchedItem?.job_count ?? matchedItem?.count ?? 0) || 0;
+          return { ...cat, jobsCount: count };
+        });
+
+        setCategories(categoriesWithCounts);
+      } catch (error) {
+        console.error('Failed to fetch categories:', error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   // Map identifier to Lucide component
   const getCategoryIcon = (iconName: string) => {
     switch (iconName) {
       case 'laptop':
+      case 'laptop-outline':
         return Laptop;
       case 'dollar':
+      case 'dollar-sign':
         return DollarSign;
       case 'heart':
         return Heart;
@@ -31,14 +73,18 @@ export default function CategoryGrid({ onSelectCategory }: CategoryGridProps) {
         return TrendingUp;
       case 'users':
         return Users;
+      case 'headphones':
       case 'headphone':
         return Headphones;
+      case 'settings':
       case 'gear':
         return Settings;
       case 'book':
+      case 'book-open':
         return BookOpen;
       case 'truck':
         return Truck;
+      case 'pen-tool':
       case 'pen':
         return PenTool;
       default:
@@ -62,7 +108,7 @@ export default function CategoryGrid({ onSelectCategory }: CategoryGridProps) {
 
         {/* 5-column, 10-card responsive grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-5">
-          {CATEGORIES.map((cat) => {
+          {categories.map((cat) => {
             const Icon = getCategoryIcon(cat.iconName);
             
             return (

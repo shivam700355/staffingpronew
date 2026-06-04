@@ -1,8 +1,9 @@
+import { Category } from './types';
 const API_BASE = "https://api.staffingpro.in/api";
 
 type Json = Record<string, any>;
 
-const defaultApiKey = (import.meta.env && (import.meta.env.VITE_API_KEY as string)) || "STAFFINGPRO123";
+const defaultApiKey = (import.meta.env && (import.meta.env.VITE_API_KEY as string));
 
 async function apiPost(path: string, payload: Json = {}) {
   const myHeaders = new Headers();
@@ -32,6 +33,14 @@ export async function getCities() {
 
 export async function getJobTitles() {
   return apiPost("jobtitle");
+}
+
+export async function jobGetCount() {
+  return apiPost("countjccn");
+}
+
+export async function jobCategory() {
+  return apiPost("countcategory");
 }
 
 export async function postTo(path: string, payload: Json = {}) {

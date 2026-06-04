@@ -1,40 +1,77 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Briefcase, Building2, Users2, PlusCircle } from 'lucide-react';
+import { jobGetCount } from '../api';
 
 export default function StatsBar() {
+  const [counts, setCounts] = useState({
+    liveJobs: 0,
+    companies: 0,
+    candidates: 0,
+    newJobsToday: 0,
+  });
+
+  useEffect(() => {
+    const fetchCounts = async () => {
+      try {
+        const response = await jobGetCount();
+        const dataArray = response?.data || [];
+
+        const countsByTitle = Array.isArray(dataArray)
+          ? dataArray.reduce<Record<string, number>>((acc, item) => {
+              if (!item || typeof item.title !== 'string') return acc;
+              const title = item.title.trim().toLowerCase();
+              acc[title] = Number(item.count) || 0;
+              return acc;
+            }, {})
+          : {};
+
+        setCounts({
+          liveJobs: countsByTitle['active jobs'] || 0,
+          companies: countsByTitle['total companies'] || 0,
+          candidates: countsByTitle['total candidates'] || 0,
+          newJobsToday: countsByTitle['new jobs'] || 0,
+        });
+      } catch (error) {
+        console.error('Failed to fetch counts:', error);
+      }
+    };
+
+    fetchCounts();
+  }, []);
+
   const stats = [
     {
       id: 'stat_1',
-      num: '1,75,324',
+      num: counts.liveJobs.toLocaleString(),
       label: 'Live Jobs',
       bgColor: 'bg-sp-navy/10',
       iconColor: 'text-sp-navy',
-      icon: Briefcase
+      icon: Briefcase,
     },
     {
       id: 'stat_2',
-      num: '97,354',
+      num: counts.companies.toLocaleString(),
       label: 'Companies',
       bgColor: 'bg-sp-navy/10',
       iconColor: 'text-sp-navy',
-      icon: Building2
+      icon: Building2,
     },
     {
       id: 'stat_3',
-      num: '38,47,154',
+      num: counts.candidates.toLocaleString(),
       label: 'Candidates',
       bgColor: 'bg-sp-navy/10',
+      icon: Users2,
       iconColor: 'text-sp-navy',
-      icon: Users2
     },
     {
       id: 'stat_4',
-      num: '7,532',
+      num: counts.newJobsToday.toLocaleString(),
       label: 'New Jobs Today',
       bgColor: 'bg-sp-navy/10',
       iconColor: 'text-sp-navy',
-      icon: PlusCircle
-    }
+      icon: PlusCircle,
+    },
   ];
 
   return (
@@ -43,21 +80,23 @@ export default function StatsBar() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
           {stats.map((stat) => {
             const IconComponent = stat.icon;
+
             return (
               <div
                 key={stat.id}
                 className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 flex items-center gap-4 group"
               >
-                {/* Circle icon wrapper */}
                 <div
-                  className={`h-12 w-12 rounded-lg ${stat.bgColor} ${stat.iconColor} flex items-center justify-center shrink-0 transition-transform duration-300 `}
+                  className={`h-12 w-12 rounded-lg ${stat.bgColor} ${stat.iconColor} flex items-center justify-center shrink-0`}
                 >
-                  <IconComponent className="h-6 w-6 font-semibold" />
+                  <IconComponent className="h-6 w-6" />
                 </div>
+
                 <div>
-                  <h3 className="text-xl sm:text-2xl font-bold text-sp-navy leading-none mb-1 ">
+                  <h3 className="text-xl sm:text-2xl font-bold text-sp-navy leading-none mb-1">
                     {stat.num}
                   </h3>
+
                   <p className="text-xs text-sp-muted font-semibold uppercase tracking-wider">
                     {stat.label}
                   </p>

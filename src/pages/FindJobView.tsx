@@ -389,9 +389,9 @@ export default function FindJobView({
       </div>
 
       {/* Primary Workspace Layout Grid */}
-      {/* <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         
-     
+        {/* Left Filters Sidebar */}
         <aside className="lg:col-span-1 space-y-6" id="search-filters-sidebar">
           <div className="bg-white rounded-2xl border border-gray-150 p-6 shadow-sm divide-y divide-gray-150">
             
@@ -408,7 +408,7 @@ export default function FindJobView({
               </button>
             </div>
 
-       
+            {/* Part A: Location Checklist */}
             <div className="py-4.5">
               <h4 className="text-xs font-black text-indigo-950 uppercase tracking-wider mb-3">
                 Job Location
@@ -425,7 +425,7 @@ export default function FindJobView({
               </div>
             </div>
 
-     
+            {/* Part B: Category Checklist */}
             <div className="py-4.5">
               <h4 className="text-xs font-black text-indigo-950 uppercase tracking-wider mb-3">
                 Job Category
@@ -442,7 +442,7 @@ export default function FindJobView({
               </div>
             </div>
 
-           
+            {/* Part C: Job Type Checkboxes */}
             <div className="py-4.5">
               <h4 className="text-xs font-black text-indigo-950 uppercase tracking-wider mb-3">
                 Employment Type
@@ -459,7 +459,7 @@ export default function FindJobView({
               </div>
             </div>
 
-         
+            {/* Part D: Work Mode Pill selection */}
             <div className="py-4.5">
               <h4 className="text-xs font-black text-indigo-950 uppercase tracking-wider mb-3 block">
                 Work Mode
@@ -484,7 +484,7 @@ export default function FindJobView({
               </div>
             </div>
 
-       
+            {/* Part E: Experience ranges */}
             <div className="py-4.5">
               <RangeSlider
                 label="Experience Level"
@@ -498,7 +498,7 @@ export default function FindJobView({
               />
             </div>
 
-        
+            {/* Part F: Salaries sliders */}
             <div className="py-4.5">
               <RangeSlider
                 label="Min Annual Salary"
@@ -516,7 +516,7 @@ export default function FindJobView({
           </div>
         </aside>
 
-  
+        {/* Right Listings block */}
         <main className="lg:col-span-3 space-y-6" id="job-search-results-list">
           
           <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 bg-white border border-gray-100 rounded-xl px-5 py-4 shadow-sm">
@@ -548,27 +548,27 @@ export default function FindJobView({
             </div>
           </div>
 
+          {/* Listings cards grid */}
+        <div className="flex flex-col gap-5">
+  {paginatedJobs.map(job => {
+    const company = COMPANIES.find(c => c.id === job.companyId);
+    const isSaved = savedJobIds.includes(job.id);
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {paginatedJobs.map(job => {
-              const company = COMPANIES.find(c => c.id === job.companyId);
-              const isSaved = savedJobIds.includes(job.id);
-              
-              return (
-                <JobCard
-                  key={job.id}
-                  job={job}
-                  company={company}
-                  isSaved={isSaved}
-                  onToggleSave={() => onToggleSaveJob(job.id)}
-                  onSelect={() => onSelectJob(job)}
-                  onApply={() => onApplyJob(job)}
-                />
-              );
-            })}
-          </div>
+    return (
+      <JobCard
+        key={job.id}
+        job={job}
+        company={company}
+        isSaved={isSaved}
+        onToggleSave={() => onToggleSaveJob(job.id)}
+        onSelect={() => onSelectJob(job)}
+        onApply={() => onApplyJob(job)}
+      />
+    );
+  })}
+</div>
 
-    
+          {/* Empty fallback state */}
           {filteredJobs.length === 0 && (
             <div className="text-center py-16 bg-white border border-dashed border-gray-200 rounded-2xl p-6">
               <div className="h-14 w-14 rounded-full bg-gray-50 text-gray-300 flex items-center justify-center mx-auto mb-4 border">
@@ -587,7 +587,7 @@ export default function FindJobView({
             </div>
           )}
 
-    
+          {/* Pagination controls */}
           {totalPages > 1 && (
             <div className="flex items-center justify-center gap-2 pt-4">
               <button
@@ -624,7 +624,7 @@ export default function FindJobView({
 
         </main>
 
-      </div> */}
+      </div>
     </div>
   );
 }

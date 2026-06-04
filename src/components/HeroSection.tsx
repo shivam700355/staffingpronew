@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Search, MapPin, Sparkles } from 'lucide-react';
 import { JOBS } from '../data';
 import { getCities, getJobTitles } from '../api';
+import RightImage from '../../assets/hero.png';
 
 interface CityOption {
   id: number;
@@ -222,76 +223,20 @@ export default function HeroSection({ onSearch, setCurrentPage }: HeroSectionPro
           </div>
 
           {/* Right Column: gorgeous CSS illustration matching image */}
-          <div className="lg:col-span-5 relative flex justify-center py-4">
-            
-            {/* SVG Workspace Board Wrapper with subtle dynamic animations */}
-            <div className="w-full max-w-[420px] aspect-square rounded-2xl bg-gradient-to-tr from-slate-50 to-sp-green-light/10 border border-slate-100 p-6 flex flex-col justify-between shadow-inner relative overflow-hidden group">
-              
-              {/* Back ambient circles */}
-              <div className="absolute -top-10 -right-10 w-44 h-44 bg-sp-green/10 rounded-full blur-2xl group-hover:scale-110 transition-transform duration-500" />
-              <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-blue-200/10 rounded-full blur-xl" />
+        <div className="lg:col-span-5 relative flex justify-center py-4">
+  <div className="w-full max-w-[420px] relative">
+    <img
+      src={RightImage}
+      alt="StaffingPro Job Placement"
+      className="w-full h-auto "
+    />
 
-              {/* Card Header */}
-              <div className="flex items-center justify-between border-b border-sp-border pb-4">
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-sp-green inline-block animate-pulse" />
-                  <span className="text-xs font-bold text-sp-navy">Elite Placement Indicator</span>
-                </div>
-                <span className="text-[10px] text-sp-green font-bold bg-sp-green-light px-2.5 py-1 rounded-full uppercase tracking-wider">
-                  Live Matcher
-                </span>
-              </div>
 
-              {/* Developer character desk visualization replaced with clean match-rate scorecard */}
-              <div className="relative flex-1 flex flex-col items-center justify-center py-6">
-                
-                {/* Custom Stylized Progress Card */}
-                <div className="w-full bg-white border border-sp-border rounded-xl p-4.5 shadow-sm space-y-3.5 transform group-hover:scale-[1.02] transition-transform duration-500">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold text-sp-muted tracking-wider uppercase">Average Profile Match</span>
-                    <span className="text-sm font-extrabold text-sp-green">98.4% Quality</span>
-                  </div>
-                  <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                    <div className="bg-sp-green h-full rounded-full transition-all duration-1000" style={{ width: '92%' }} />
-                  </div>
-                  <div className="flex flex-wrap gap-1.5 pt-1">
-                    <span className="text-[10px] font-bold text-sp-navy bg-sp-bg px-2.5 py-1 rounded-md">Full Stack</span>
-                    <span className="text-[10px] font-bold text-sp-navy bg-sp-bg px-2.5 py-1 rounded-md">Medicine</span>
-                    <span className="text-[10px] font-bold text-sp-navy bg-sp-bg px-2.5 py-1 rounded-md">Finance</span>
-                    <span className="text-[10px] font-bold text-sp-navy bg-sp-bg px-2.5 py-1 rounded-md">UI/UX</span>
-                  </div>
-                </div>
 
-                {/* Mini floats cards */}
-                <div className="absolute -left-2 top-4 bg-white border border-sp-border rounded-lg p-2.5 shadow-md flex items-center gap-2 animate-bounce" style={{ animationDuration: '4.5s' }}>
-                  <div className="w-6 h-6 rounded bg-sp-green-light flex items-center justify-center text-sp-green font-extrabold text-xs">₹</div>
-                  <div className="leading-none">
-                    <div className="text-[10px] font-extrabold text-sp-navy">₹35 Lakhs+</div>
-                    <div className="text-[8px] text-sp-muted font-bold">Max Package</div>
-                  </div>
-                </div>
 
-                <div className="absolute -right-2 bottom-6 bg-white border border-sp-border rounded-lg p-2.5 shadow-md flex items-center gap-2 transform hover:scale-105 transition-all">
-                  <div className="w-6 h-6 rounded-full bg-sp-green-light flex items-center justify-center text-sp-green">
-                    <Sparkles className="h-3 w-3 fill-current" />
-                  </div>
-                  <div className="leading-none">
-                    <div className="text-[10px] font-extrabold text-sp-navy">Top Tier Matches</div>
-                    <div className="text-[8px] text-sp-muted font-bold">Sourcing Engine</div>
-                  </div>
-                </div>
-
-              </div>
-
-              {/* Bottom statistics summaries */}
-              <div className="border-t border-sp-border pt-4 flex items-center justify-between text-xs text-sp-muted font-semibold">
-                <span>Verified Partners</span>
-                <span className="text-sp-green font-bold">Zomato, Swiggy & more</span>
-              </div>
-
-            </div>
-
-          </div>
+  
+  </div>
+</div>
 
         </div>
       </div>
