@@ -56,8 +56,8 @@ export default function JobCard({
 
   return (
     <div
-      // onClick={onSelect}
-      // id={`job-card-${job.id}`}
+      onClick={onSelect}
+      id={`job-card-${job.id}`}
       className={`relative bg-white border rounded-xl cursor-pointer transition-all duration-300 p-4 hover:-translate-y-0.5 hover:shadow-md ${
         job.isFeatured
           ? ' border-gray-200'
@@ -183,11 +183,11 @@ export default function JobCard({
           </button>
 
           <button
-            // onClick={(e) => {
-            //   e.stopPropagation();
-            //   onApply();
-            // }}
-            // id={`apply-action-btn-${job.id}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              onApply();
+            }}
+            id={`apply-action-btn-${job.id}`}
             className="flex items-center gap-1 px-3 py-2 rounded-lg bg-sp-green-light hover:bg-sp-green text-sp-green hover:text-white text-[11px] font-extrabold transition-all duration-200"
           >
             <span>Apply Now</span>

@@ -127,7 +127,7 @@ export default function JobDetailView({ job, onBack, onApplySuccess, currentUser
       {/* Return to Finder trigger */}
       <button
         onClick={onBack}
-        className="inline-flex items-center gap-2.5 px-4.5 py-2.5 bg-white border border-gray-150 rounded-xl text-xs font-bold text-sp-navy hover:text-sp-green hover:shadow-xs transition-all mb-8"
+        className="inline-flex items-center gap-2.5 px-4.5 py-2.5 bg-white border border-gray-100 rounded-xl text-xs font-bold text-sp-navy hover:text-sp-green hover:shadow-xs transition-all mb-8"
         id="detail-back-button"
       >
         <ArrowLeft className="h-4 w-4" />
@@ -141,7 +141,7 @@ export default function JobDetailView({ job, onBack, onApplySuccess, currentUser
         <div className="lg:col-span-8 space-y-6">
           
           {/* Header Card parameters */}
-          <div className="bg-white border border-gray-150 rounded-2xl p-6.5 shadow-sm">
+          <div className="bg-white border border-gray-100 rounded-2xl p-6.5 shadow-sm">
             <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
               <div>
                 <h1 className="text-xl sm:text-2xl.5 font-sans font-extrabold text-sp-navy leading-tight tracking-tight mb-2.5">
@@ -194,9 +194,9 @@ export default function JobDetailView({ job, onBack, onApplySuccess, currentUser
           </div>
 
           {/* Tabbed documentation console */}
-          <div className="bg-white border border-gray-150 rounded-2xl overflow-hidden shadow-sm">
+          <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
             {/* Headers selector tab row */}
-            <div className="flex border-b border-gray-150 bg-gray-50">
+            <div className="flex border-b border-gray-100 bg-gray-50">
               {[
                 { id: 'overview', label: 'Overview & Roles' },
                 { id: 'requirements', label: 'Requirements' },
@@ -301,7 +301,7 @@ export default function JobDetailView({ job, onBack, onApplySuccess, currentUser
             </div>
 
             {/* Skills tag list section */}
-            <div className="bg-slate-50 px-6.5 py-5 border-t border-gray-150">
+            <div className="bg-slate-50 px-6.5 py-5 border-t border-gray-100">
               <h4 className="text-xs font-black text-slate-400 uppercase tracking-wider mb-2.5">
                 Target Skillsets Sourced
               </h4>
@@ -337,7 +337,7 @@ export default function JobDetailView({ job, onBack, onApplySuccess, currentUser
                         // trigger detail bypass
                         window.location.reload(); // forces refresh easily OR bypass
                       }}
-                      className="bg-white border border-gray-150 p-4.5 rounded-xl hover:shadow-md cursor-pointer transition-all leading-normal"
+                      className="bg-white border border-gray-100 p-4.5 rounded-xl hover:shadow-md cursor-pointer transition-all leading-normal"
                     >
                       <h4 className="text-xs font-extrabold text-slate-400 mb-1">{simComp?.name}</h4>
                       <h5 className="text-sm font-bold text-sp-navy mb-3 line-clamp-1 group-hover:text-sp-green">{sim.title}</h5>
@@ -381,7 +381,7 @@ export default function JobDetailView({ job, onBack, onApplySuccess, currentUser
                 </div>
                 <div className="pt-2">
                   <a
-                    href="#/signin"
+                    // href="#/signin"
                     className="inline-block w-full py-3 bg-sp-navy hover:bg-slate-850 text-white font-extrabold text-[11px] uppercase tracking-wider rounded-xl text-center shadow-md shadow-slate-300 transition-all"
                   >
                     Login as Seeker
@@ -423,7 +423,7 @@ export default function JobDetailView({ job, onBack, onApplySuccess, currentUser
                 </div>
                 
                 <div className="bg-slate-50 p-3 rounded-lg border border-slate-150 text-[10px] font-bold text-gray-500 leading-normal text-left space-y-1">
-                  <div className="font-extrabold text-sp-navy pb-0.5 border-b border-gray-150 uppercase tracking-widest">Completeness Checklists:</div>
+                  <div className="font-extrabold text-sp-navy pb-0.5 border-b border-gray-100 uppercase tracking-widest">Completeness Checklists:</div>
                   <div className="flex justify-between">
                     <span>• Resume Uploaded (30%):</span>
                     <span className={hasResume ? "text-sp-green font-bold" : "text-gray-400 font-bold"}>
@@ -592,7 +592,7 @@ export default function JobDetailView({ job, onBack, onApplySuccess, currentUser
           </div>
 
           {/* Quick Company statistics card */}
-          <div className="bg-white border border-gray-150 rounded-2xl p-6.5 shadow-sm">
+          <div className="bg-white border border-gray-100 rounded-2xl p-6.5 shadow-sm">
             <h3 className="text-base font-bold text-sp-navy border-b border-gray-100 pb-3 mb-4 flex items-center justify-between">
               <span>Hiring Employer</span>
               <span className="text-xs font-extrabold text-sp-green">Verified</span>

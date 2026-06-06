@@ -185,7 +185,7 @@ export default function Header({ currentPage, setCurrentPage, currentUser, onLog
               </div>
             ) : (
               <button
-                // onClick={() => setCurrentPage('signin')}
+                onClick={() => setCurrentPage('signin')}
                 className="px-4.5 py-2 text-sm font-semibold text-sp-navy hover:text-sp-green transition-colors duration-200"
                 id="header-sign-in-button"
               >
