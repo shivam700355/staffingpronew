@@ -15,7 +15,7 @@ import { Job, Company, JobFilters } from '../types';
 import { JOBS, COMPANIES, CATEGORIES, CITIES } from '../data';
 import JobCard from '../components/JobCard';
 import SEO from '../components/SEO';
-import { FormCheckbox, RangeSlider } from '../components/FormElements';
+import { FormCheckbox, RangeSlider, SmallLoader } from '../components/FormElements';
 
 interface FindJobViewProps {
   initialSearch?: string;
@@ -74,6 +74,7 @@ export default function FindJobView({
     const p = searchParams.get('page');
     return p ? Number(p) : 1;
   });
+  const [isLoadingResults, setIsLoadingResults] = useState(false);
   const itemsPerPage = 6;
 
   // Effect (1): Push state changes to the URL query parameter values in real-time
@@ -155,6 +156,14 @@ export default function FindJobView({
   useEffect(() => {
     setSearch(initialSearch || '');
   }, [initialSearch]);
+
+  useEffect(() => {
+    setIsLoadingResults(true);
+    const timer = window.setTimeout(() => {
+      setIsLoadingResults(false);
+    }, 250);
+    return () => window.clearTimeout(timer);
+  }, [search, selectedCities, selectedCategories, selectedTypes, selectedModes, maxExperience, minSalary, sortBy, currentPage]);
 
   // Handle filter checkbox modifications
   const handleToggleCity = (city: string) => {
@@ -549,27 +558,11 @@ export default function FindJobView({
           </div>
 
           {/* Listings cards grid */}
-        <div className="flex flex-col gap-5">
-  {paginatedJobs.map(job => {
-    const company = COMPANIES.find(c => c.id === job.companyId);
-    const isSaved = savedJobIds.includes(job.id);
-
-    return (
-      <JobCard
-        key={job.id}
-        job={job}
-        company={company}
-        isSaved={isSaved}
-        onToggleSave={() => onToggleSaveJob(job.id)}
-        onSelect={() => onSelectJob(job)}
-        onApply={() => onApplyJob(job)}
-      />
-    );
-  })}
-</div>
-
-          {/* Empty fallback state */}
-          {filteredJobs.length === 0 && (
+          {isLoadingResults ? (
+            <div className="rounded-2xl border border-gray-100 bg-white p-10 text-center shadow-sm">
+              <SmallLoader label="Finding the best matches..." />
+            </div>
+          ) : filteredJobs.length === 0 ? (
             <div className="text-center py-16 bg-white border border-dashed border-gray-200 rounded-2xl p-6">
               <div className="h-14 w-14 rounded-full bg-gray-50 text-gray-300 flex items-center justify-center mx-auto mb-4 border">
                 <Search className="h-7 w-7" />
@@ -584,6 +577,25 @@ export default function FindJobView({
               >
                 Reset Search Filters
               </button>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-5">
+              {paginatedJobs.map(job => {
+                const company = COMPANIES.find(c => c.id === job.companyId);
+                const isSaved = savedJobIds.includes(job.id);
+
+                return (
+                  <JobCard
+                    key={job.id}
+                    job={job}
+                    company={company}
+                    isSaved={isSaved}
+                    onToggleSave={() => onToggleSaveJob(job.id)}
+                    onSelect={() => onSelectJob(job)}
+                    onApply={() => onApplyJob(job)}
+                  />
+                );
+              })}
             </div>
           )}
 

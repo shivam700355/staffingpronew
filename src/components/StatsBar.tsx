@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Briefcase, Building2, Users2, PlusCircle } from 'lucide-react';
 import { jobGetCount } from '../api';
+import { SmallLoader } from './FormElements';
 
 export default function StatsBar() {
   const [counts, setCounts] = useState({
@@ -9,9 +10,11 @@ export default function StatsBar() {
     candidates: 0,
     newJobsToday: 0,
   });
+  const [isLoadingCounts, setIsLoadingCounts] = useState(true);
 
   useEffect(() => {
     const fetchCounts = async () => {
+      setIsLoadingCounts(true);
       try {
         const response = await jobGetCount();
         const dataArray = response?.data || [];
@@ -33,6 +36,8 @@ export default function StatsBar() {
         });
       } catch (error) {
         console.error('Failed to fetch counts:', error);
+      } finally {
+        setIsLoadingCounts(false);
       }
     };
 
@@ -42,7 +47,7 @@ export default function StatsBar() {
   const stats = [
     {
       id: 'stat_1',
-      num: counts.liveJobs.toLocaleString(),
+      num: isLoadingCounts ? '...' : counts.liveJobs.toLocaleString(),
       label: 'Live Jobs',
       bgColor: 'bg-sp-navy/10',
       iconColor: 'text-sp-navy',
@@ -50,7 +55,7 @@ export default function StatsBar() {
     },
     {
       id: 'stat_2',
-      num: counts.companies.toLocaleString(),
+      num: isLoadingCounts ? '...' : counts.companies.toLocaleString(),
       label: 'Companies',
       bgColor: 'bg-sp-navy/10',
       iconColor: 'text-sp-navy',
@@ -58,7 +63,7 @@ export default function StatsBar() {
     },
     {
       id: 'stat_3',
-      num: counts.candidates.toLocaleString(),
+      num: isLoadingCounts ? '...' : counts.candidates.toLocaleString(),
       label: 'Candidates',
       bgColor: 'bg-sp-navy/10',
       icon: Users2,
@@ -66,7 +71,7 @@ export default function StatsBar() {
     },
     {
       id: 'stat_4',
-      num: counts.newJobsToday.toLocaleString(),
+      num: isLoadingCounts ? '...' : counts.newJobsToday.toLocaleString(),
       label: 'New Jobs Today',
       bgColor: 'bg-sp-navy/10',
       iconColor: 'text-sp-navy',
@@ -77,6 +82,11 @@ export default function StatsBar() {
   return (
     <section className="py-10 bg-sp-bg" id="interactive-metrics-section">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {isLoadingCounts && (
+          <div className="mb-6 text-center">
+            <SmallLoader label="Loading dashboard metrics..." />
+          </div>
+        )}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
           {stats.map((stat) => {
             const IconComponent = stat.icon;

@@ -23,6 +23,7 @@ import { Job, Company } from '../types';
 import { JOBS, COMPANIES } from '../data';
 import { getSeekerProfile, calculateSeekerCompleteness } from '../profileHelper';
 import SEO from '../components/SEO';
+import { ToastNotification, SmallLoader } from '../components/FormElements';
 
 interface JobDetailViewProps {
   job: Job;
@@ -41,7 +42,11 @@ export default function JobDetailView({ job, onBack, onApplySuccess, currentUser
   const [resumeName, setResumeName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
+  const [toast, setToast] = useState<{
+    type: 'success' | 'info' | 'warning' | 'danger' | 'error';
+    message: string;
+    description?: string;
+  } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Profile data fetch for checking completeness gates dynamically
@@ -63,6 +68,12 @@ export default function JobDetailView({ job, onBack, onApplySuccess, currentUser
   }, [profile, currentUser]);
 
   const company = COMPANIES.find(c => c.id === job.companyId) || COMPANIES[0];
+
+  useEffect(() => {
+    if (!toast) return;
+    const timer = window.setTimeout(() => setToast(null), 4500);
+    return () => window.clearTimeout(timer);
+  }, [toast]);
 
   // Helper salary formatter
   const formatSalarRange = (min: number, max: number) => {
@@ -86,16 +97,24 @@ export default function JobDetailView({ job, onBack, onApplySuccess, currentUser
   const handleApplySubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName.trim() || !email.trim() || !coverLetter.trim() || !resumeName) {
-      setErrorMsg('Please complete all form fields and upload your resume/CV.');
+      setToast({
+        type: 'warning',
+        message: 'Please complete all form fields and upload your resume/CV.',
+        description: 'A fully completed application improves your chance of selection.'
+      });
       return;
     }
-    setErrorMsg('');
     setIsSubmitting(true);
 
     // Simulate database write
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSuccess(true);
+      setToast({
+        type: 'success',
+        message: 'Application submitted successfully.',
+        description: `Your profile and documents have been sent to ${company.name}.`
+      });
       onApplySuccess(job.id, {
         fullName,
         email,
@@ -492,11 +511,13 @@ export default function JobDetailView({ job, onBack, onApplySuccess, currentUser
                   </div>
                 ) : (
                   <form onSubmit={handleApplySubmit} className="space-y-4">
-                    
-                    {errorMsg && (
-                      <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-xs text-red-600 font-semibold leading-normal">
-                        {errorMsg}
-                      </div>
+                    {toast && (
+                      <ToastNotification
+                        type={toast.type}
+                        message={toast.message}
+                        description={toast.description}
+                        onClose={() => setToast(null)}
+                      />
                     )}
 
                     <div className="space-y-1">
@@ -581,7 +602,11 @@ export default function JobDetailView({ job, onBack, onApplySuccess, currentUser
                       disabled={isSubmitting}
                       className="w-full py-3 bg-sp-green hover:bg-opacity-95 text-white font-extrabold text-xs tracking-wider uppercase rounded-xl transition-all shadow-sm shadow-sp-green/20"
                     >
-                      {isSubmitting ? 'Synchronizing files...' : 'Send Application Sourced'}
+                      {isSubmitting ? (
+                        <SmallLoader label="Synchronizing..." className="text-white" />
+                      ) : (
+                        'Send Application Sourced'
+                      )}
                     </button>
 
                   </form>

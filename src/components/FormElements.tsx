@@ -1,5 +1,5 @@
 import React from 'react';
-import { Check, Info, AlertTriangle, AlertCircle } from 'lucide-react';
+import { Check, Info, AlertTriangle, AlertCircle, X } from 'lucide-react';
 
 // Unified styled Form Field Wrapper
 interface FormFieldProps {
@@ -103,15 +103,17 @@ export function RangeSlider({
 
 // Reusable alert notification banner
 interface AlertBannerProps {
-  type: 'success' | 'info' | 'warning' | 'danger';
+  type: 'success' | 'info' | 'warning' | 'danger' | 'error';
   title: string;
   description?: string;
   id?: string;
 }
 
 export function AlertBanner({ type, title, description, id }: AlertBannerProps) {
+  const normalizedType = type === 'error' ? 'danger' : type;
+
   const getStyle = () => {
-    switch (type) {
+    switch (normalizedType) {
       case 'success':
         return {
           bg: 'bg-emerald-50 border-emerald-150 text-emerald-800',
@@ -146,6 +148,90 @@ export function AlertBanner({ type, title, description, id }: AlertBannerProps) 
         {description && <p className="text-xs font-medium">{description}</p>}
       </div>
     </div>
+  );
+}
+
+interface ToastNotificationProps {
+  type: 'success' | 'info' | 'warning' | 'danger' | 'error';
+  message: string;
+  description?: string;
+  title?: string;
+  onClose?: () => void;
+  id?: string;
+}
+
+export function ToastNotification({ type, message, description, title, onClose, id }: ToastNotificationProps) {
+  const normalizedType = type === 'error' ? 'danger' : type;
+
+  const getStyle = () => {
+    switch (normalizedType) {
+      case 'success':
+        return {
+          bg: 'bg-emerald-50 border-emerald-150 text-emerald-800',
+          icon: <Check className="h-5 w-5 text-emerald-600 shrink-0" />,
+          label: 'Success'
+        };
+      case 'warning':
+        return {
+          bg: 'bg-amber-50 border-amber-150 text-amber-800',
+          icon: <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0" />,
+          label: 'Warning'
+        };
+      case 'danger':
+        return {
+          bg: 'bg-red-50 border-red-150 text-red-800',
+          icon: <AlertCircle className="h-5 w-5 text-red-600 shrink-0" />,
+          label: 'Error'
+        };
+      case 'info':
+      default:
+        return {
+          bg: 'bg-indigo-50 border-indigo-150 text-indigo-800',
+          icon: <Info className="h-5 w-5 text-indigo-600 shrink-0" />,
+          label: 'Info'
+        };
+    }
+  };
+
+  const currentStyle = getStyle();
+
+  return (
+    <div
+      id={id}
+      role="status"
+      aria-live="polite"
+      className={`flex items-start justify-between gap-3 p-4 border rounded-2xl shadow-sm ${currentStyle.bg}`}
+    >
+      <div className="flex items-start gap-3">
+        {currentStyle.icon}
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-[11px] font-extrabold uppercase tracking-[0.22em]">{title || currentStyle.label}</span>
+          </div>
+          <p className="text-sm font-semibold leading-snug">{message}</p>
+          {description && <p className="text-xs text-slate-600 mt-1">{description}</p>}
+        </div>
+      </div>
+      {onClose && (
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Dismiss notification"
+          className="text-slate-500 hover:text-slate-900 transition-colors"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      )}
+    </div>
+  );
+}
+
+export function SmallLoader({ label = 'Loading...', className = '', id }: { label?: string; className?: string; id?: string }) {
+  return (
+    <span id={id} className={`inline-flex items-center gap-2 text-xs font-semibold text-slate-700 ${className}`}>
+      <span className="h-4 w-4 rounded-full border-2 border-slate-200 border-t-sp-green animate-spin" />
+      {label}
+    </span>
   );
 }
 

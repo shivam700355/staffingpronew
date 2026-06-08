@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Mail, Phone, MapPin, CheckCircle2, Send, HelpCircle, MessagesSquare, ShieldCheck } from 'lucide-react';
 import SEO from '../components/SEO';
+import { ToastNotification, SmallLoader } from '../components/FormElements';
 
 export default function ContactView() {
   const [name, setName] = useState('');
@@ -9,18 +10,40 @@ export default function ContactView() {
   const [message, setMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [toast, setToast] = useState<{
+    type: 'success' | 'info' | 'warning' | 'danger' | 'error';
+    message: string;
+    description?: string;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!toast) return;
+    const timer = window.setTimeout(() => setToast(null), 4500);
+    return () => window.clearTimeout(timer);
+  }, [toast]);
 
   const handleSupportSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !email.trim() || !message.trim()) {
-      alert('Please complete all message fields.');
+      setToast({
+        type: 'warning',
+        message: 'Please complete all message fields.',
+        description: 'We need your full name, email, and query details before submitting.'
+      });
       return;
     }
     setIsSubmitting(true);
 
+    const ticketId = `STPRO-${Math.floor(100000 + Math.random() * 900000)}`;
+
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSuccess(true);
+      setToast({
+        type: 'success',
+        message: 'Support ticket successfully logged.',
+        description: `Your reference number is ${ticketId}. A StaffingPro agent will reply soon.`
+      });
     }, 1000);
   };
 
@@ -53,6 +76,17 @@ export default function ContactView() {
           <p className="text-xs text-gray-400 font-semibold mb-6">
             Complete details to open an active support tracker. Ref numbers are generated instantly.
           </p>
+
+          {toast && (
+            <div className="mb-4">
+              <ToastNotification
+                type={toast.type}
+                message={toast.message}
+                description={toast.description}
+                onClose={() => setToast(null)}
+              />
+            </div>
+          )}
 
           {isSuccess ? (
             <div className="text-center py-10 space-y-4" id="contact-success-notification">
@@ -136,8 +170,14 @@ export default function ContactView() {
                 disabled={isSubmitting}
                 className="w-full py-3.5 bg-sp-green hover:bg-opacity-95 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm shadow-sp-green/20 flex items-center justify-center gap-1.5"
               >
-                <Send className="h-4 w-4" />
-                <span>{isSubmitting ? 'Transmitting details...' : 'Transmit Sourced Docket'}</span>
+                {isSubmitting ? (
+                  <SmallLoader label="Transmitting..." className="text-white" />
+                ) : (
+                  <>
+                    <Send className="h-4 w-4" />
+                    <span>Transmit Sourced Docket</span>
+                  </>
+                )}
               </button>
 
             </form>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
 import { MapPin, Menu, X, User, LogOut } from 'lucide-react';
 import logoImage from '../../assets/StaffingLogo.png';
 
@@ -12,9 +13,12 @@ interface HeaderProps {
 export default function Header({ currentPage, setCurrentPage, currentUser, onLogout }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [locationName, setLocationName] = useState<string>('Bengaluru, IN');
+  const [locationName, setLocationName] = useState<string>('Locating...');
+  const [locationStatus, setLocationStatus] = useState<'detecting' | 'allowed' | 'denied' | 'fallback'>('detecting');
 
   useEffect(() => {
+    let isMounted = true;
+
     const handleScroll = () => {
       if (window.scrollY > 10) {
         setIsScrolled(true);
@@ -22,57 +26,139 @@ export default function Header({ currentPage, setCurrentPage, currentUser, onLog
         setIsScrolled(false);
       }
     };
-    window.addEventListener('scroll', handleScroll);
 
-    // Fast robust IP geolocation detection
-    fetch('https://ipapi.co/json/')
-      .then((res) => {
-        if (res.ok) return res.json();
-        throw new Error();
-      })
-      .then((data) => {
-        if (data && data.city && data.country_code) {
-          setLocationName(`${data.city}, ${data.country_code}`);
-        }
-      })
-      .catch(() => {
-        // Silent fallback - remain Bengaluru, IN
-      });
+    const setFallbackLocation = (fallbackText = 'Bengaluru, IN') => {
+      if (!isMounted) return;
+      setLocationName(fallbackText);
+      setLocationStatus('fallback');
+    };
 
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    const setDetectedLocation = (name: string) => {
+      if (!isMounted) return;
+      setLocationName(name);
+      setLocationStatus('allowed');
+    };
 
-  const handleRefreshLocation = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if ('geolocation' in navigator) {
-      setLocationName('Detecting...');
+    const fetchIpLocation = () => {
+      fetch('https://ipapi.co/json/')
+        .then((res) => {
+          if (res.ok) return res.json();
+          throw new Error();
+        })
+        .then((data) => {
+          if (!isMounted) return;
+          if (data && data.city && data.country_code) {
+            setDetectedLocation(`${data.city}, ${data.country_code}`);
+          } else {
+            setFallbackLocation();
+          }
+        })
+        .catch(() => {
+          setFallbackLocation();
+        });
+    };
+
+    const detectGeolocation = () => {
+      if (!('geolocation' in navigator)) {
+        fetchIpLocation();
+        return;
+      }
+
       navigator.geolocation.getCurrentPosition(
         (position) => {
+          if (!isMounted) return;
           const lat = position.coords.latitude;
           const lon = position.coords.longitude;
           fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10`)
             .then((res) => res.json())
             .then((data) => {
-              const city = data.address?.city || data.address?.town || data.address?.suburb || data.address?.state_district || 'My Location';
+              if (!isMounted) return;
+              const city = data.address?.city || data.address?.town || data.address?.suburb || data.address?.state_district || 'Current Location';
               const countryCode = (data.address?.country_code || 'IN').toUpperCase();
-              setLocationName(`${city}, ${countryCode}`);
+              setDetectedLocation(`${city}, ${countryCode}`);
             })
             .catch(() => {
-              setLocationName(`${lat.toFixed(2)}°N, ${lon.toFixed(2)}°E`);
+              setDetectedLocation(`${lat.toFixed(2)}°N, ${lon.toFixed(2)}°E`);
             });
         },
-        () => {
-          setLocationName('Bengaluru, IN');
-        }
+        (error) => {
+          if (!isMounted) return;
+          if (error.code === error.PERMISSION_DENIED) {
+            setLocationStatus('denied');
+          }
+          fetchIpLocation();
+        },
+        { timeout: 10000, maximumAge: 300000 }
       );
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    detectGeolocation();
+
+    return () => {
+      isMounted = false;
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  const handleRefreshLocation = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setLocationName('Detecting...');
+    setLocationStatus('detecting');
+
+    if (!('geolocation' in navigator)) {
+      fetch('https://ipapi.co/json/')
+        .then((res) => {
+          if (res.ok) return res.json();
+          throw new Error();
+        })
+        .then((data) => {
+          if (data && data.city && data.country_code) {
+            setLocationName(`${data.city}, ${data.country_code}`);
+            setLocationStatus('fallback');
+          } else {
+            setLocationName('Bengaluru, IN');
+            setLocationStatus('fallback');
+          }
+        })
+        .catch(() => {
+          setLocationName('Bengaluru, IN');
+          setLocationStatus('fallback');
+        });
+      return;
     }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10`)
+          .then((res) => res.json())
+          .then((data) => {
+            const city = data.address?.city || data.address?.town || data.address?.suburb || data.address?.state_district || 'Current Location';
+            const countryCode = (data.address?.country_code || 'IN').toUpperCase();
+            setLocationName(`${city}, ${countryCode}`);
+            setLocationStatus('allowed');
+          })
+          .catch(() => {
+            setLocationName(`${lat.toFixed(2)}°N, ${lon.toFixed(2)}°E`);
+            setLocationStatus('allowed');
+          });
+      },
+      () => {
+        setLocationName('Bengaluru, IN');
+        setLocationStatus('denied');
+      },
+      { timeout: 10000, maximumAge: 300000 }
+    );
   };
 
   const navLinks = [
-    { id: 'jobs', label: 'Find Job' },
-    { id: '', label: 'Employers' },
-    { id: '', label: 'Candidates' },
-    { id: '', label: 'Pricing Plans' }
+    { id: 'jobs', label: 'Find Job', route: '/jobs' },
+    { id: 'employers', label: 'Employers', route: '/employers' },
+    { id: 'candidates', label: 'Candidates', route: '/candidates' },
+    { id: 'pricing', label: 'Pricing Plans', route: '/pricing' },
+    { id: 'contact', label: 'Contact', route: '/contact' }
   ];
   //   const navLinks = [
   //   { id: 'jobs', label: 'Find Job' },
@@ -108,23 +194,25 @@ export default function Header({ currentPage, setCurrentPage, currentUser, onLog
           {/* Desktop Navigation Links */}
           <nav className="hidden lg:flex items-center gap-7" id="desktop-navbar-items">
             {navLinks.map((link) => (
-              <button
+              <NavLink
                 key={link.id}
-                onClick={() => {
-                  setCurrentPage(link.id);
-                  setIsMobileMenuOpen(false);
-                }}
-                className={`relative font-sans text-sm font-medium transition-colors py-1.5 duration-200 ${
-                  currentPage === link.id
-                    ? 'text-sp-green font-semibold'
-                    : 'text-sp-navy hover:text-sp-green'
-                }`}
+                to={link.route}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={({ isActive }) =>
+                  `relative font-sans text-sm font-medium transition-colors py-1.5 duration-200 ${
+                    isActive ? 'text-sp-green font-semibold' : 'text-sp-navy hover:text-sp-green'
+                  }`
+                }
               >
-                {link.label}
-                {currentPage === link.id && (
-                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-sp-green rounded-full transition-all duration-300" />
+                {({ isActive }) => (
+                  <>
+                    {link.label}
+                    {isActive && (
+                      <span className="absolute bottom-0 left-0 w-full h-0.5 bg-sp-green rounded-full transition-all duration-300" />
+                    )}
+                  </>
                 )}
-              </button>
+              </NavLink>
             ))}
           </nav>
 
@@ -194,7 +282,7 @@ export default function Header({ currentPage, setCurrentPage, currentUser, onLog
             )}
 
             <button
-              // onClick={() => setCurrentPage('postjob')}
+              onClick={() => setCurrentPage('postjob')}
               className="px-5 py-2.5 bg-sp-green hover:bg-opacity-90 text-white rounded-lg text-sm font-bold shadow-sm shadow-sp-green/20 transition-all duration-200 hover:-translate-y-0.5"
               id="header-post-job-button"
             >
@@ -205,18 +293,18 @@ export default function Header({ currentPage, setCurrentPage, currentUser, onLog
           {/* Mobile Menu Action Button */}
           <div className="flex lg:hidden items-center gap-4">
             <button
-              // onClick={() => setCurrentPage('postjob')}
+              onClick={() => setCurrentPage('postjob')}
               className="px-3.5 py-1.5 bg-sp-green text-white rounded-md text-xs font-bold transition-all"
             >
               Post Job
             </button>
-            {/* <button
+            <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="p-1.5 rounded-lg text-sp-navy hover:bg-gray-100 transition-colors"
               aria-label="Toggle navigation menu"
             >
               {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </button> */}
+            </button>
           </div>
 
         </div>

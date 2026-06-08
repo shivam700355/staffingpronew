@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Check, ArrowRight, ArrowLeft, Search, Plus, X, Sparkles, AlertCircle, Lock, ShieldAlert, Building2 } from 'lucide-react';
 import { Job, Company } from '../types';
 import { CATEGORIES, CITIES } from '../data';
 import { getEmployerProfile, calculateEmployerCompleteness } from '../profileHelper';
 import SEO from '../components/SEO';
-import { FormField, StepTimeline } from '../components/FormElements';
+import { FormField, StepTimeline, ToastNotification, SmallLoader } from '../components/FormElements';
 
 interface PostJobViewProps {
   onPublishJob: (newJob: Job) => void;
@@ -15,6 +15,18 @@ interface PostJobViewProps {
 export default function PostJobView({ onPublishJob, currentUser, setCurrentPage }: PostJobViewProps) {
   const [step, setStep] = useState(1);
   const [showPublishSuccess, setShowPublishSuccess] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [toast, setToast] = useState<{
+    type: 'success' | 'info' | 'warning' | 'danger' | 'error';
+    message: string;
+    description?: string;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!toast) return;
+    const timer = window.setTimeout(() => setToast(null), 4500);
+    return () => window.clearTimeout(timer);
+  }, [toast]);
 
   // Profile data fetch for checking corporate parameters completeness dynamically
   const profile = currentUser && currentUser.role === 'employer' ? getEmployerProfile(currentUser.email) : null;
@@ -73,19 +85,31 @@ export default function PostJobView({ onPublishJob, currentUser, setCurrentPage 
   const handleNextStep = () => {
     if (step === 1) {
       if (!title.trim()) {
-        alert('Please specify a Job Title before advancing.');
+        setToast({
+          type: 'warning',
+          message: 'Please specify a job title before advancing.',
+          description: 'A job title is required so candidates can discover your opening.'
+        });
         return;
       }
     }
     if (step === 2) {
       if (!description.trim() || !responsibilitiesRaw.trim() || !requirementsRaw.trim()) {
-        alert('Please complete description details and responsibilities lists.');
+        setToast({
+          type: 'warning',
+          message: 'Please complete the description and requirement details.',
+          description: 'All sections are required to finish step two of the job builder.'
+        });
         return;
       }
     }
     if (step === 3) {
       if (selectedSkills.length === 0) {
-        alert('Please select at least one core skill.');
+        setToast({
+          type: 'warning',
+          message: 'Please select at least one core skill.',
+          description: 'Skills support faster matching and better candidate discovery.'
+        });
         return;
       }
     }
@@ -127,8 +151,18 @@ export default function PostJobView({ onPublishJob, currentUser, setCurrentPage 
       publisherEmail: currentUser?.email || 'employer@staffingpro.com'
     };
 
-    onPublishJob(compileNewJobObj);
-    setShowPublishSuccess(true);
+    setIsPublishing(true);
+
+    setTimeout(() => {
+      onPublishJob(compileNewJobObj);
+      setShowPublishSuccess(true);
+      setIsPublishing(false);
+      setToast({
+        type: 'success',
+        message: 'Job listing published successfully.',
+        description: 'Your vacancy is now live in the StaffingPro feed for qualified employer candidates.'
+      });
+    }, 700);
   };
 
   // GATES CHECK: If recruiter is not logged in or profile is under 80% complete, render high-contrast warning overlays
@@ -308,6 +342,16 @@ export default function PostJobView({ onPublishJob, currentUser, setCurrentPage 
       </div>
 
       {/* Progress timeline bar */}
+      {toast && (
+        <div className="mb-6">
+          <ToastNotification
+            type={toast.type}
+            message={toast.message}
+            description={toast.description}
+            onClose={() => setToast(null)}
+          />
+        </div>
+      )}
       {!showPublishSuccess && (
         <StepTimeline
           steps={[
@@ -716,9 +760,14 @@ export default function PostJobView({ onPublishJob, currentUser, setCurrentPage 
               <button
                 type="button"
                 onClick={handlePublishSubmit}
-                className="px-6 py-2.5 bg-sp-green hover:bg-opacity-95 text-white font-black text-xs uppercase tracking-widest rounded-xl transition-all shadow-md shadow-sp-green/20"
+                disabled={isPublishing}
+                className="px-6 py-2.5 bg-sp-green hover:bg-opacity-95 text-white font-black text-xs uppercase tracking-widest rounded-xl transition-all shadow-md shadow-sp-green/20 disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                Confirm & Sourcing Succeeded
+                {isPublishing ? (
+                  <SmallLoader label="Publishing..." className="text-white" />
+                ) : (
+                  'Confirm & Sourcing Succeeded'
+                )}
               </button>
             )}
           </div>

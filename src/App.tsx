@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Navigate, useNavigate, useParams } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate, useParams, useLocation } from 'react-router-dom';
 import ThemeProvider from './context/ThemeContext';
 import MainLayout from './layouts/MainLayout';
 
@@ -58,9 +58,13 @@ function AppRoutes() {
     setSavedJobIds(prev => prev.includes(id) ? prev.filter(x=>x!==id) : [...prev, id]);
   };
 
+  const location = useLocation();
+  const routeSegment = location.pathname.split('/')[1] || 'home';
+  const currentPage = routeSegment === '' ? 'home' : routeSegment;
+
   return (
     <Routes>
-      <Route path="/" element={<MainLayout currentPage="home" setCurrentPage={navigateToPage} currentUser={currentUser} onLogout={handleLogout} />}>
+      <Route path="/" element={<MainLayout currentPage={currentPage} setCurrentPage={navigateToPage} currentUser={currentUser} onLogout={handleLogout} />}>
         <Route index element={<HomeView onSearch={(k,c)=>navigate(`/jobs?q=${encodeURIComponent(k)}`)} setCurrentPage={navigateToPage} activeJobsList={activeJobsList} onSelectCategory={(c)=>navigate(`/jobs?category=${encodeURIComponent(c)}`)} onSelectRole={(r)=>navigate(`/jobs?q=${encodeURIComponent(r)}`)} />} />
         <Route path="about" element={<div />} />
         <Route path="jobs" element={<FindJobView initialSearch="" initialCategory="" savedJobIds={savedJobIds} onToggleSaveJob={handleToggleSaveJob} onSelectJob={(job:any)=>navigate(`/jobs/${job.id}`)} onApplyJob={(job:any)=>navigate(`/jobs/${job.id}`)} />} />

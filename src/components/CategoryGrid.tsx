@@ -21,8 +21,10 @@ interface CategoryGridProps {
 export default function CategoryGrid({ onSelectCategory }: CategoryGridProps) {
 
   const [categories, setCategories] = React.useState(CATEGORIES);
+  const [isLoadingCategories, setIsLoadingCategories] = React.useState(true);
   React.useEffect(() => {
     const fetchCategories = async () => {
+      setIsLoadingCategories(true);
       try {
         const response = await jobCategory();
         
@@ -52,6 +54,8 @@ export default function CategoryGrid({ onSelectCategory }: CategoryGridProps) {
         setCategories(categoriesWithCounts);
       } catch (error) {
         console.error('Failed to fetch categories:', error);
+      } finally {
+        setIsLoadingCategories(false);
       }
     };
 
@@ -108,7 +112,18 @@ export default function CategoryGrid({ onSelectCategory }: CategoryGridProps) {
 
         {/* 5-column, 10-card responsive grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-5">
-          {categories.map((cat) => {
+          {isLoadingCategories
+            ? Array.from({ length: 5 }).map((_, idx) => (
+                <div
+                  key={`placeholder-${idx}`}
+                  className="bg-white border border-gray-100 rounded-xl p-5.5 flex flex-col items-center text-center animate-pulse"
+                >
+                  <div className="h-12 w-12 rounded-lg bg-slate-100 mb-4" />
+                  <div className="h-4 w-24 bg-slate-100 rounded-full mb-2" />
+                  <div className="h-3 w-20 bg-slate-100 rounded-full" />
+                </div>
+              ))
+            : categories.map((cat) => {
             const Icon = getCategoryIcon(cat.iconName);
             
             return (
