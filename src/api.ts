@@ -43,11 +43,20 @@ export async function jobCategory() {
   return apiPost("countcategory");
 }
 
+export async function fetchJobListings(payload: Json = {}) {
+  return apiPost("job-listing", payload);
+}
+
+export const JobListing = fetchJobListings;
+
 export async function postTo(path: string, payload: Json = {}) {
   return apiPost(path, payload);
 }
 
 export default {
   getCities,
+  getJobTitles,
+  fetchJobListings,
+  JobListing,
   postTo,
 };

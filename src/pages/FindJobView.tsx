@@ -20,6 +20,7 @@ import { FormCheckbox, RangeSlider, SmallLoader } from '../components/FormElemen
 interface FindJobViewProps {
   initialSearch?: string;
   initialCategory?: string;
+  activeJobsList: Job[];
   savedJobIds: string[];
   onToggleSaveJob: (jobId: string) => void;
   onSelectJob: (job: Job) => void;
@@ -29,12 +30,14 @@ interface FindJobViewProps {
 export default function FindJobView({
   initialSearch = '',
   initialCategory = '',
+  activeJobsList,
   savedJobIds,
   onToggleSaveJob,
   onSelectJob,
   onApplyJob
 }: FindJobViewProps) {
   const [searchParams, setSearchParams] = useSearchParams();
+  
 
   // Helper to check array equality to prevent unnecessary route state updates
   const arraysEqual = (a: string[], b: string[]) => {
@@ -205,9 +208,11 @@ export default function FindJobView({
     setCurrentPage(1);
   };
 
+  const jobsSource = activeJobsList.length > 0 ? activeJobsList : JOBS;
+
   // Perform dynamic filtering using useMemo
   const filteredJobs = useMemo(() => {
-    let result = [...JOBS];
+    let result = [...jobsSource];
 
     // Search bar matching (Title, description, skills or company name)
     if (search.trim()) {
